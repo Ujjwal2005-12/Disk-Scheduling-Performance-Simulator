@@ -1,14 +1,69 @@
 #include<stdio.h>
 #define MAX 100
 
-int display(char *x);
-
+void display(char *x,int total, int n){
+    printf("\n[%s] Total Head Movement: %d | Average Seek Time: %.2f\n",
+           x, total, (float)total / n);
+}
 int fcfs(); // VINIT
-int scan();
-int clook();
-int look();
-int cscan();
-int sstf();
+int scan();//vinit
+int clook(int req[],int n,int head){
+
+     int total = 0, arr[MAX + 1];
+    for (int i = 0; i < n; i++) arr[i] = req[i];
+    arr[n++] = head;
+    sort(arr, n);
+
+    int pos;
+    for (int i = 0; i < n; i++) if (arr[i] == head) { pos = i; break; }
+
+    total = (arr[n - 1] - head) + (arr[n - 1] - arr[0]) + (arr[pos - 1] - arr[0]);
+    display("C-LOOK", total, n - 1);
+    return total;
+
+}
+int look(int req[],int n,int head){
+
+    int dir;        
+    printf("enter Direction \n1 : UP\n2 : DOWN\n ");
+
+    scanf("%d",&dir);
+    int total = 0, arr[MAX + 1];
+    for (int i = 0; i < n; i++) arr[i] = req[i];
+    arr[n++] = head;
+    sort(arr, n);
+
+    int pos;
+    for (int i = 0; i < n; i++) if (arr[i] == head) { pos = i; break; }
+
+    if (dir == 1)
+        total += (arr[n - 1] - head) + (arr[n - 1] - arr[0]);
+    else
+        total += (head - arr[0]) + (arr[n - 1] - arr[0]);
+
+    display("LOOK", total, n - 1);
+    return total;
+
+
+}
+int cscan();//
+int sstf(int req[], int n, int head) {
+    int done[MAX] = {0}, total = 0;
+    for (int count = 0; count < n; count++) {
+        int min = 1e9, index = -1;
+        for (int i = 0; i < n; i++)
+            if (!done[i] && absolute(req[i] - head) < min) {
+                min = absolute(req[i] - head);
+                index = i;
+            }
+        total += absolute(req[index] - head);
+        head = req[index];
+        done[index] = 1;
+    }
+    display("SSTF", total, n);
+    return total;
+}
+
 int abs(int a){
     if(a<0){
         return -a;
@@ -37,7 +92,7 @@ for (int i = 0; i < n-1; i++)
 
 
 }
-int Summary();
+
 
 int workload();
 
